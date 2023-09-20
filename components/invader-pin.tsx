@@ -16,9 +16,9 @@ export function InvaderPin({ pin, isZoomedIn }: InvaderPinProps) {
     <Marker title={pin.name} coordinate={pin.coordinates} onSelect={() => setSelectedPin(pin)} onDeselect={() => setSelectedPin(null)}>
       {isZoomedIn ? (
         <LinearGradient
-          colors={['#6a2d89', '#ff3838', '#ff7514', '#ffb800']}
-          start={{ x: 0.45, y: 0 }}
-          end={{ x: 0.55, y: 1 }}
+          colors={['#6b21a8', '#be185d', '#ef4444', '#f59e0b']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={styles.circle}
         />
       ) : (
@@ -33,13 +33,13 @@ const styles = StyleSheet.create({
     width: 3,
     height: 3,
     borderRadius: 1.5,
-    backgroundColor: '#400c78',
+    backgroundColor: '#be185d',
   },
   circle: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#400c78',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: '#6b21a8',
   },
 })
