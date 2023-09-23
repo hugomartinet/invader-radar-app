@@ -1,14 +1,25 @@
-import { ReactNode, useState } from 'react'
-import { Text, TouchableHighlight, View } from 'react-native'
-
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { IconProps } from '@expo/vector-icons/build/createIconSet'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ReactNode, useEffect, useState } from 'react'
+import { Text, TouchableHighlight, View } from 'react-native'
 import colors from 'tailwindcss/colors'
+import { Pin } from '../types/pin'
 
-export function InvaderStatusPicker() {
+interface InvaderStatusPickerProps {
+  selectedPin: Pin
+}
+
+export function InvaderStatusPicker({ selectedPin }: InvaderStatusPickerProps) {
   const [status, setStatus] = useState<Status>('To Flash')
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    AsyncStorage.getItem(selectedPin.name).then(value => {
+      if (value) setStatus(value as unknown as Status)
+    })
+  }, [selectedPin])
 
   return (
     <View
@@ -33,8 +44,10 @@ export function InvaderStatusPicker() {
               className="w-[200] px-[20] py-[10] border-b-[1px] last:border-b-0 border-gray-100 "
               underlayColor={colors.gray[100]}
               onPress={() => {
-                setStatus(value)
-                setIsOpen(false)
+                AsyncStorage.setItem(selectedPin.name, value).then(() => {
+                  setStatus(value)
+                  setIsOpen(false)
+                })
               }}
             >
               <View className="flex-row items-center">

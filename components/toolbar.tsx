@@ -28,7 +28,7 @@ export function Toolbar() {
         />
       </MaskedView>
 
-      <InvaderStatusPicker />
+      <InvaderStatusPicker selectedPin={selectedPin} />
     </View>
   )
 }
