@@ -1,8 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { Marker } from 'react-native-maps'
 import { useMapContext } from '../context/map'
 import { Pin } from '../types/pin'
+import colors from 'tailwindcss/colors'
 
 interface InvaderPinProps {
   pin: Pin
@@ -16,30 +17,14 @@ export function InvaderPin({ pin, isZoomedIn }: InvaderPinProps) {
     <Marker title={pin.name} coordinate={pin.coordinates} onSelect={() => setSelectedPin(pin)} onDeselect={() => setSelectedPin(null)}>
       {isZoomedIn ? (
         <LinearGradient
-          colors={['#6b21a8', '#be185d', '#ef4444', '#f59e0b']}
+          className="w-[10] h-[10] rounded-full border-[0.5px] border-pink-600"
+          colors={[colors.red[500], colors.orange[400]]}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.circle}
+          end={{ x: 1, y: 0 }}
         />
       ) : (
-        <View style={styles.dot} />
+        <View className="w-[3] h-[3] rounded-full bg-red-500" />
       )}
     </Marker>
   )
 }
-
-const styles = StyleSheet.create({
-  dot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: '#be185d',
-  },
-  circle: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 0.5,
-    borderColor: '#6b21a8',
-  },
-})
