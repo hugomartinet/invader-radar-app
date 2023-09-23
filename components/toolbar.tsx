@@ -3,6 +3,7 @@ import { useMapContext } from '../context/map'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
 import colors from 'tailwindcss/colors'
+import { InvaderStatusPicker } from './invader-status-picker'
 
 export function Toolbar() {
   const { selectedPin } = useMapContext()
@@ -10,7 +11,7 @@ export function Toolbar() {
   if (!selectedPin) return null
 
   return (
-    <View className="absolute bottom-[20] left-[20] right-[20] h-[80px] flex align-start justify-center bg-white rounded-full px-[30] shadow-lg">
+    <View className="absolute bottom-[20] left-[20] right-[20] h-[80px] flex flex-row items-center justify-center bg-white rounded-full pl-[32] pr-[16] shadow-lg">
       <MaskedView
         style={{ flex: 1 }}
         maskElement={
@@ -26,6 +27,8 @@ export function Toolbar() {
           end={{ x: 1, y: 0 }}
         />
       </MaskedView>
+
+      <InvaderStatusPicker />
     </View>
   )
 }
