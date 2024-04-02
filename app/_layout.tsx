@@ -7,7 +7,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <View style={styles.container}>
-        <Slot initialRouteName="/home" />
+        <Slot />
       </View>
     </QueryClientProvider>
   )

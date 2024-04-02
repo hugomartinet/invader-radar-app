@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "Invader Radar",
-    "slug": "invader-radar-app",
+    "slug": "invader-radar",
+    "scheme": "invader-radar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -2,6 +2,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Button, TextInput, View } from 'react-native'
 import { useAPIMutation } from '../../services/api'
 import { useToken } from '../../services/authentication/token'
+import { router } from 'expo-router'
 
 interface LoginFormData {
   username: string
@@ -39,6 +40,7 @@ export function LoginForm() {
         onPress={handleSubmit(async data => {
           const token = await onLogin(data)
           setToken(token)
+          router.push('/home')
         })}
       />
     </View>
