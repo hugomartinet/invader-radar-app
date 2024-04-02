@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store'
 import { useCallback, useState } from 'react'
 
 export function useToken() {
-  const [tokenValue, setTokenValue] = useState<string | null>(SecureStore.getItem('token'))
+  const [tokenValue, setTokenValue] = useState<string | null>(getToken())
 
   const setToken = useCallback((value: string | null) => {
     if (value === null) {
@@ -14,4 +14,8 @@ export function useToken() {
   }, [])
 
   return { token: tokenValue, setToken }
+}
+
+export function getToken() {
+  return SecureStore.getItem('token')
 }

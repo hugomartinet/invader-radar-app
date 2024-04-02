@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { QueryClient, UseMutationOptions, UseQueryOptions, useMutation, useQuery } from 'react-query'
 
 import { API_URL } from '../config'
+import { getToken } from './authentication/token'
 
 interface Config extends AxiosRequestConfig {
   queryKeySuffix?: string
@@ -18,7 +19,7 @@ const getQueryKey = (config: Config) => {
 
 export const useAPIQuery = <TData = void>(config: Config, options?: UseQueryOptions<TData, AxiosError>) => {
   const queryKey = getQueryKey(config)
-  const queryFn = () => axiosClient.request<TData>(config).then(res => res.data)
+  const queryFn = () => axiosClient.request<TData>(enhanceConfigWithAuthorization(config)).then(res => res.data)
   return useQuery<TData, AxiosError>(queryKey, queryFn, options)
 }
 
@@ -26,10 +27,11 @@ interface UseAPIMutationOptions<TData, TError, TVariables> extends UseMutationOp
   invalidateQueries?: string[]
 }
 export const useAPIMutation = <TData = void, TVariables = void>(
-  config: Config | ((variables: TVariables) => Config),
+  config: Config,
   options?: UseAPIMutationOptions<TData, AxiosError, TVariables>
 ) => {
-  const mutationFn = async (variables: TVariables) => axiosClient.request<TData>({ ...config, data: variables }).then(res => res.data)
+  const mutationFn = async (variables: TVariables) =>
+    axiosClient.request<TData>({ ...enhanceConfigWithAuthorization(config), data: variables }).then(res => res.data)
   return useMutation<TData, AxiosError, TVariables>(mutationFn, {
     ...options,
     onSuccess: (...args) => {
@@ -37,4 +39,16 @@ export const useAPIMutation = <TData = void, TVariables = void>(
       if (options?.onSuccess) options.onSuccess(...args)
     },
   })
+}
+
+function enhanceConfigWithAuthorization(config: Config) {
+  const token = getToken()
+  if (!token) return config
+  return {
+    ...config,
+    headers: {
+      ...config.headers,
+      Authorization: `Bearer ${token}`,
+    },
+  }
 }
