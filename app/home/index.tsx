@@ -1,20 +1,5 @@
-import { Button, Text } from 'react-native'
-import { useToken } from '../../services/authentication/token'
-import { router } from 'expo-router'
+import { Map } from '../../components/map/map'
 
 export default function Page() {
-  const { setToken } = useToken()
-
-  return (
-    <>
-      <Text>Home page</Text>
-      <Button
-        title="Log out"
-        onPress={() => {
-          setToken(null)
-          router.push('/login')
-        }}
-      />
-    </>
-  )
+  return <Map />
 }
