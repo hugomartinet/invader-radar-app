@@ -1,11 +1,33 @@
-import { StyleSheet, View } from 'react-native'
+import { ColorValue, StyleSheet, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../theme/colors'
+import { useInvaderStatus } from '../../hooks/use-invader-status'
 
-export function InvaderMarker() {
+type InvaderMarkerProps = {
+  invaderId: string
+}
+
+export function InvaderMarker({ invaderId }: InvaderMarkerProps) {
+  const { states } = useInvaderStatus()
+  const state = states[invaderId] || { found: false, destroyed: false }
+  const { found, destroyed } = state
+
+  const getGradientColors = (): [ColorValue, ColorValue] => {
+    if (found) {
+      return [colors.found.start, colors.found.end]
+    }
+    if (destroyed) {
+      return [colors.destroyed.start, colors.destroyed.end]
+    }
+    return [colors.primary, colors.accent]
+  }
+
+  // Create a unique key that changes when the status changes
+  const markerKey = `${invaderId}-${found}-${destroyed}`
+
   return (
-    <View style={styles.container}>
-      <LinearGradient colors={[colors.primary, colors.accent]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.marker} />
+    <View key={markerKey} style={styles.container}>
+      <LinearGradient colors={getGradientColors()} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.marker} />
     </View>
   )
 }

@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import MaskedView from '@react-native-masked-view/masked-view'
 import { colors } from '../../theme/colors'
 import { Invader } from '../../types/invader'
+import { StatusButtons } from './status-buttons'
 
 type InvaderDrawerProps = {
   invader: Invader | null
@@ -24,6 +25,7 @@ export function InvaderDrawer({ invader, onClose }: InvaderDrawerProps) {
           <Text style={styles.closeButtonText}>×</Text>
         </Pressable>
       </View>
+      <StatusButtons invaderId={invader.id} />
     </View>
   )
 }

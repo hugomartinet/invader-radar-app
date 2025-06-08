@@ -5,6 +5,7 @@ import { useRegion } from '../../hooks/use-region'
 import { InvaderMarker } from './invader-marker'
 import { InvaderDrawer } from './invader-drawer'
 import { Invader } from '../../types/invader'
+import { useInvaderStatus } from '../../hooks/use-invader-status'
 
 const INITIAL_REGION = {
   latitude: 48.86,
@@ -16,15 +17,21 @@ const INITIAL_REGION = {
 export function Map() {
   const { region, setRegion, invaders } = useRegion(INITIAL_REGION)
   const [selectedInvader, setSelectedInvader] = useState<Invader | null>(null)
+  const { states } = useInvaderStatus()
 
   return (
     <>
       <MapView style={styles.map} initialRegion={region} onRegionChangeComplete={setRegion} showsUserLocation>
-        {invaders?.map(invader => (
-          <Marker key={invader.id} coordinate={invader} onPress={() => setSelectedInvader(invader)}>
-            <InvaderMarker />
-          </Marker>
-        ))}
+        {invaders?.map(invader => {
+          const state = states[invader.id] || { found: false, destroyed: false }
+          const markerKey = `${invader.id}-${state.found}-${state.destroyed}`
+
+          return (
+            <Marker key={markerKey} coordinate={invader} onPress={() => setSelectedInvader(invader)}>
+              <InvaderMarker invaderId={invader.id} />
+            </Marker>
+          )
+        })}
       </MapView>
       <InvaderDrawer invader={selectedInvader} onClose={() => setSelectedInvader(null)} />
     </>
