@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Region } from 'react-native-maps'
-import { useAPIQuery } from '../services/api'
-import { Invader } from '../types/invader'
+import invadersData from '../assets/invaders.json'
 
 export function useRegion(initalRegion: Region) {
   const [region, setRegion] = useState<Region>(initalRegion)
@@ -16,7 +15,21 @@ export function useRegion(initalRegion: Region) {
     [region]
   )
 
-  const { data: invaders } = useAPIQuery<Invader[]>({ url: '/invaders', params })
+  const invaders = useMemo(() => {
+    return invadersData
+      .map(invader => ({
+        id: invader.id,
+        latitude: invader.coordinates.lat,
+        longitude: invader.coordinates.long,
+      }))
+      .filter(
+        invader =>
+          invader.latitude >= params.minLat &&
+          invader.latitude <= params.maxLat &&
+          invader.longitude >= params.minLong &&
+          invader.longitude <= params.maxLong
+      )
+  }, [params])
 
   return { invaders, region, setRegion }
 }
