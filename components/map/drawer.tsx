@@ -1,29 +1,69 @@
 import MaskedView from '@react-native-masked-view/masked-view'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View, Animated } from 'react-native'
 import { colors } from '../../theme/colors'
 import { StatusButtons } from './status-buttons'
 import { useInvadersContext } from '../../hooks/use-invaders-context'
+import { useEffect, useRef, useState } from 'react'
 
 export function Drawer() {
   const { selectedInvader, setSelectedInvader } = useInvadersContext()
+  const slideAnim = useRef(new Animated.Value(0))
+  const [isVisible, setIsVisible] = useState(false)
 
-  if (!selectedInvader) return null
+  useEffect(() => {
+    if (selectedInvader) {
+      setIsVisible(true)
+      // Slide up
+      Animated.spring(slideAnim.current, {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 7,
+      }).start()
+    } else {
+      // Slide down
+      Animated.spring(slideAnim.current, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 50,
+        friction: 7,
+      }).start(() => {
+        // Only hide the component after animation completes
+        setIsVisible(false)
+      })
+    }
+  }, [selectedInvader])
+
+  if (!isVisible) return null
+
+  const translateY = slideAnim.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [300, 0],
+  })
 
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          transform: [{ translateY }],
+        },
+      ]}
+    >
+      <View style={styles.backgroundExtension} />
       <View style={styles.content}>
-        <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{selectedInvader.id}</Text>}>
+        <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{selectedInvader?.id}</Text>}>
           <LinearGradient colors={[colors.primary, colors.accent]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradient}>
-            <Text style={styles.title}>{selectedInvader.id}</Text>
+            <Text style={styles.title}>{selectedInvader?.id}</Text>
           </LinearGradient>
         </MaskedView>
         <Pressable onPress={() => setSelectedInvader(null)} style={styles.closeButton}>
           <Text style={styles.closeButtonText}>×</Text>
         </Pressable>
       </View>
-      <StatusButtons invader={selectedInvader} />
-    </View>
+      {selectedInvader && <StatusButtons invader={selectedInvader} />}
+    </Animated.View>
   )
 }
 
@@ -44,6 +84,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  backgroundExtension: {
+    position: 'absolute',
+    bottom: -100, // Extends 100 units below the drawer
+    left: 0,
+    right: 0,
+    height: 100,
+    backgroundColor: colors.white,
   },
   content: {
     paddingVertical: 20,
