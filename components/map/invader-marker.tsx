@@ -1,18 +1,22 @@
-import { ColorValue, StyleSheet, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { ColorValue, StyleSheet } from 'react-native'
+import { Marker } from 'react-native-maps'
 import { colors } from '../../theme/colors'
-import { useInvaderStatus } from '../../hooks/use-invader-status'
+import { Invader } from '../../types/invader'
+import { useInvadersContext } from '../../hooks/use-invaders-context'
+import { useInvaderStatuses } from '../../hooks/use-invader-statuses'
+import { useMemo } from 'react'
 
 type InvaderMarkerProps = {
-  invaderId: string
+  invader: Invader
 }
 
-export function InvaderMarker({ invaderId }: InvaderMarkerProps) {
-  const { states } = useInvaderStatus()
-  const state = states[invaderId] || { found: false, destroyed: false }
-  const { found, destroyed } = state
+export function InvaderMarker({ invader }: InvaderMarkerProps) {
+  const { setSelectedInvader } = useInvadersContext()
+  const { getStatus } = useInvaderStatuses()
 
-  const getGradientColors = (): [ColorValue, ColorValue] => {
+  const gradientColors: [ColorValue, ColorValue] = useMemo(() => {
+    const { found, destroyed } = getStatus(invader.id)
     if (found) {
       return [colors.found.start, colors.found.end]
     }
@@ -20,34 +24,19 @@ export function InvaderMarker({ invaderId }: InvaderMarkerProps) {
       return [colors.destroyed.start, colors.destroyed.end]
     }
     return [colors.primary, colors.accent]
-  }
-
-  // Create a unique key that changes when the status changes
-  const markerKey = `${invaderId}-${found}-${destroyed}`
+  }, [getStatus, invader.id])
 
   return (
-    <View key={markerKey} style={styles.container}>
-      <LinearGradient colors={getGradientColors()} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.marker} />
-    </View>
+    <Marker coordinate={invader} onPress={() => setSelectedInvader(invader)}>
+      <LinearGradient colors={gradientColors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.marker} />
+    </Marker>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   marker: {
     width: 12,
     height: 12,
     borderRadius: 6,
-    shadowColor: colors.accent,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
   },
 })

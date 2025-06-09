@@ -1,9 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Region } from 'react-native-maps'
 import invadersData from '../assets/invaders.json'
+import { useInvadersContext } from './use-invaders-context'
 
-export function useRegion(initalRegion: Region) {
-  const [region, setRegion] = useState<Region>(initalRegion)
+const INITIAL_REGION = {
+  latitude: 48.86,
+  longitude: 2.34,
+  latitudeDelta: 0.2,
+  longitudeDelta: 0.1,
+}
+
+export function useRegion() {
+  const [region, setRegion] = useState<Region>(INITIAL_REGION)
+  const { setInvaders } = useInvadersContext()
 
   const params = useMemo(
     () => ({
@@ -15,21 +24,23 @@ export function useRegion(initalRegion: Region) {
     [region]
   )
 
-  const invaders = useMemo(() => {
-    return invadersData
+  useEffect(() => {
+    const filteredInvaders = invadersData
+      .filter(
+        ({ coordinates }) =>
+          coordinates.lat >= params.minLat &&
+          coordinates.lat <= params.maxLat &&
+          coordinates.long >= params.minLong &&
+          coordinates.long <= params.maxLong
+      )
       .map(invader => ({
         id: invader.id,
         latitude: invader.coordinates.lat,
         longitude: invader.coordinates.long,
       }))
-      .filter(
-        invader =>
-          invader.latitude >= params.minLat &&
-          invader.latitude <= params.maxLat &&
-          invader.longitude >= params.minLong &&
-          invader.longitude <= params.maxLong
-      )
-  }, [params])
 
-  return { invaders, region, setRegion }
+    setInvaders(filteredInvaders)
+  }, [params, setInvaders])
+
+  return { region, setRegion }
 }

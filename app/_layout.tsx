@@ -1,11 +1,14 @@
 import { Slot } from 'expo-router'
 import { StyleSheet, View } from 'react-native'
+import { InvadersContextProvider } from '../hooks/use-invaders-context'
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Slot />
-    </View>
+    <InvadersContextProvider>
+      <View style={styles.container}>
+        <Slot />
+      </View>
+    </InvadersContextProvider>
   )
 }
 

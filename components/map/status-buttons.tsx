@@ -1,29 +1,23 @@
-import React from 'react'
-import { StyleSheet, View, Pressable, Text } from 'react-native'
-import { colors } from '../../theme/colors'
-import { useInvaderStatus } from '../../hooks/use-invader-status'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
+import React from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useInvaderStatuses } from '../../hooks/use-invader-statuses'
+import { colors } from '../../theme/colors'
+import { Invader } from '../../types/invader'
 
-type StatusButtonsProps = {
-  invaderId: string
+interface StatusButtonsProps {
+  invader: Invader
 }
 
-export function StatusButtons({ invaderId }: StatusButtonsProps) {
-  const { updateState, getState } = useInvaderStatus()
-  const { found, destroyed } = getState(invaderId)
+export function StatusButtons({ invader }: StatusButtonsProps) {
+  const { getStatus, updateStatus } = useInvaderStatuses()
 
-  const toggleFound = () => {
-    updateState(invaderId, { found: !found })
-  }
-
-  const toggleDestroyed = () => {
-    updateState(invaderId, { destroyed: !destroyed })
-  }
+  const { found, destroyed } = getStatus(invader.id)
 
   return (
     <View style={styles.container}>
-      <Pressable style={[styles.button, !found && styles.inactiveButton]} onPress={toggleFound}>
+      <Pressable style={[styles.button, !found && styles.inactiveButton]} onPress={() => updateStatus(invader.id, { found: !found })}>
         {found ? (
           <LinearGradient
             colors={[colors.found.start, colors.found.end]}
@@ -31,18 +25,21 @@ export function StatusButtons({ invaderId }: StatusButtonsProps) {
             end={{ x: 1, y: 1 }}
             style={styles.gradient}
           >
-            <MaterialCommunityIcons name="eye" size={18} color="#FFFFFF" />
+            <MaterialCommunityIcons name="eye" size={18} color={colors.white} />
             <Text style={[styles.buttonText, styles.activeText]}>FOUND</Text>
           </LinearGradient>
         ) : (
           <>
-            <MaterialCommunityIcons name="eye" size={18} color="#BDBDBD" />
+            <MaterialCommunityIcons name="eye" size={18} color={colors.darkGray} />
             <Text style={[styles.buttonText, styles.inactiveText]}>FOUND</Text>
           </>
         )}
       </Pressable>
 
-      <Pressable style={[styles.button, !destroyed && styles.inactiveButton]} onPress={toggleDestroyed}>
+      <Pressable
+        style={[styles.button, !destroyed && styles.inactiveButton]}
+        onPress={() => updateStatus(invader.id, { destroyed: !destroyed })}
+      >
         {destroyed ? (
           <LinearGradient
             colors={[colors.destroyed.start, colors.destroyed.end]}
@@ -50,12 +47,12 @@ export function StatusButtons({ invaderId }: StatusButtonsProps) {
             end={{ x: 1, y: 1 }}
             style={styles.gradient}
           >
-            <MaterialCommunityIcons name="skull" size={18} color="#FFFFFF" />
+            <MaterialCommunityIcons name="skull" size={18} color={colors.white} />
             <Text style={[styles.buttonText, styles.activeText]}>DESTROYED</Text>
           </LinearGradient>
         ) : (
           <>
-            <MaterialCommunityIcons name="skull" size={18} color="#BDBDBD" />
+            <MaterialCommunityIcons name="skull" size={18} color={colors.darkGray} />
             <Text style={[styles.buttonText, styles.inactiveText]}>DESTROYED</Text>
           </>
         )}
@@ -87,7 +84,7 @@ const styles = StyleSheet.create({
   },
   inactiveButton: {
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.lightGray,
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
@@ -100,9 +97,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   inactiveText: {
-    color: '#BDBDBD',
+    color: colors.darkGray,
   },
   activeText: {
-    color: '#FFFFFF',
+    color: colors.white,
   },
 })

@@ -4,18 +4,13 @@ export const colors = {
   secondary: '#FF0000', // Bright red
   accent: '#9B00FF', // Vibrant purple
 
-  // Background colors
-  background: '#1A1A1A', // Dark background
-  surface: '#2D2D2D', // Slightly lighter surface
+  white: '#FFFFFF',
+  black: '#1A1A1A',
 
   // Text colors
   text: '#FFFFFF', // White text
-  textSecondary: '#B3B3B3', // Light gray for secondary text
-
-  // Status colors
-  success: '#34C759', // Bright green for success
-  error: '#FF3B30', // Red for errors
-  warning: '#FF9500', // Orange for warnings
+  lightGray: '#E0E0E0', // Light gray for secondary text
+  darkGray: '#999999', // Light gray for secondary text
 
   // Map colors
   mapMarker: '#FF6B00', // Orange for map markers

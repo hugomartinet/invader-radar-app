@@ -1,31 +1,28 @@
-import { StyleSheet, View, Text, Pressable } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
 import MaskedView from '@react-native-masked-view/masked-view'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { colors } from '../../theme/colors'
-import { Invader } from '../../types/invader'
 import { StatusButtons } from './status-buttons'
+import { useInvadersContext } from '../../hooks/use-invaders-context'
 
-type InvaderDrawerProps = {
-  invader: Invader | null
-  onClose: () => void
-}
+export function Drawer() {
+  const { selectedInvader, setSelectedInvader } = useInvadersContext()
 
-export function InvaderDrawer({ invader, onClose }: InvaderDrawerProps) {
-  if (!invader) return null
+  if (!selectedInvader) return null
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{invader.id}</Text>}>
+        <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{selectedInvader.id}</Text>}>
           <LinearGradient colors={[colors.primary, colors.accent]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradient}>
-            <Text style={styles.title}>{invader.id}</Text>
+            <Text style={styles.title}>{selectedInvader.id}</Text>
           </LinearGradient>
         </MaskedView>
-        <Pressable onPress={onClose} style={styles.closeButton}>
+        <Pressable onPress={() => setSelectedInvader(null)} style={styles.closeButton}>
           <Text style={styles.closeButtonText}>×</Text>
         </Pressable>
       </View>
-      <StatusButtons invaderId={invader.id} />
+      <StatusButtons invader={selectedInvader} />
     </View>
   )
 }
@@ -36,10 +33,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    shadowColor: '#000000',
+    shadowColor: colors.black,
     shadowOffset: {
       width: 0,
       height: -2,
@@ -62,7 +59,7 @@ const styles = StyleSheet.create({
   titleMask: {
     fontSize: 34,
     fontWeight: '900',
-    color: '#000000',
+    color: colors.black,
   },
   gradient: {
     flex: 1,
