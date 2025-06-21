@@ -7,6 +7,7 @@ import { Drawer } from './drawer'
 import { InvaderMarker } from './invader-marker'
 import { LocationButton } from './location-button'
 import { FilterButton } from './filter-button'
+import { NotificationButton } from './notification-button'
 import { useInvadersContext } from '../../hooks/use-invaders-context'
 import { useInvaderStatuses } from '../../hooks/use-invader-statuses'
 import { useFiltersContext } from '../../hooks/use-filters-context'
@@ -73,6 +74,7 @@ export function Map() {
       </MapView>
       <LocationButton onPress={handleLocationPress} />
       <FilterButton />
+      <NotificationButton />
       <Drawer />
     </>
   )

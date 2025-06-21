@@ -1,5 +1,6 @@
-import React, { createContext, useContext, PropsWithChildren } from 'react'
+import React, { createContext, useContext, PropsWithChildren, useEffect } from 'react'
 import { Invader, InvaderStatus } from '../types/invader'
+import { saveInvadersToStorage } from '../services/notifications'
 
 interface InvadersContextType {
   invaders: Invader[]
@@ -16,6 +17,13 @@ export function InvadersContextProvider({ children }: PropsWithChildren) {
   const [invaders, setInvaders] = React.useState<Invader[]>([])
   const [statuses, setStatuses] = React.useState<Record<string, InvaderStatus>>({})
   const [selectedInvader, setSelectedInvader] = React.useState<Invader | null>(null)
+
+  // Save invaders to storage whenever they change
+  useEffect(() => {
+    if (invaders.length > 0) {
+      saveInvadersToStorage(invaders)
+    }
+  }, [invaders])
 
   return (
     <InvadersContext.Provider value={{ invaders, setInvaders, statuses, setStatuses, selectedInvader, setSelectedInvader }}>
