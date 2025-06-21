@@ -42,41 +42,25 @@ export function Drawer() {
     outputRange: [300, 0],
   })
 
-  const handleOverlayPress = () => {
-    setSelectedInvader(null)
-  }
-
   return (
-    <>
-      <Pressable style={styles.overlay} onPress={handleOverlayPress} />
-      <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
-        <View style={styles.backgroundExtension} />
-        <View style={styles.content}>
-          <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{selectedInvader?.id}</Text>}>
-            <LinearGradient colors={[colors.primary, colors.accent]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradient}>
-              <Text style={styles.title}>{selectedInvader?.id}</Text>
-            </LinearGradient>
-          </MaskedView>
-          <Pressable onPress={() => setSelectedInvader(null)} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>×</Text>
-          </Pressable>
-        </View>
-        {selectedInvader && <StatusButtons invader={selectedInvader} />}
-      </Animated.View>
-    </>
+    <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+      <View style={styles.backgroundExtension} />
+      <View style={styles.content}>
+        <MaskedView style={styles.titleContainer} maskElement={<Text style={styles.titleMask}>{selectedInvader?.id}</Text>}>
+          <LinearGradient colors={[colors.primary, colors.accent]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.gradient}>
+            <Text style={styles.title}>{selectedInvader?.id}</Text>
+          </LinearGradient>
+        </MaskedView>
+        <Pressable onPress={() => setSelectedInvader(null)} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>×</Text>
+        </Pressable>
+      </View>
+      {selectedInvader && <StatusButtons invader={selectedInvader} />}
+    </Animated.View>
   )
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 1,
-  },
   container: {
     position: 'absolute',
     bottom: 0,

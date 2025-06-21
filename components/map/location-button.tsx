@@ -20,10 +20,10 @@ export function LocationButton({ onPress }: LocationButtonProps) {
   }
 
   const isLoading = permissionStatus === 'granted' && !location
-  const isDisabled = !location && permissionStatus !== 'granted'
+  const isAvailable = !!location && permissionStatus === 'granted'
 
   return (
-    <TouchableOpacity style={[styles.button, isDisabled && styles.buttonDisabled]} onPress={handlePress} disabled={isDisabled}>
+    <TouchableOpacity style={[styles.button, !isAvailable && styles.buttonDisabled]} onPress={handlePress}>
       {isLoading ? (
         <ActivityIndicator size="small" color={colors.darkGray} />
       ) : (

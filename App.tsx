@@ -1,12 +1,12 @@
-import { Slot } from 'expo-router'
+import { InvadersContextProvider } from './hooks/use-invaders-context'
+import { Map } from './components/map/map'
 import { StyleSheet, View } from 'react-native'
-import { InvadersContextProvider } from '../hooks/use-invaders-context'
 
 export default function App() {
   return (
     <InvadersContextProvider>
       <View style={styles.container}>
-        <Slot />
+        <Map />
       </View>
     </InvadersContextProvider>
   )
