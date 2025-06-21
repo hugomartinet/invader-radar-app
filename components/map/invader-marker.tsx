@@ -9,9 +9,10 @@ import { useMemo } from 'react'
 
 type InvaderMarkerProps = {
   invader: Invader
+  zoomLevel: number
 }
 
-export function InvaderMarker({ invader }: InvaderMarkerProps) {
+export function InvaderMarker({ invader, zoomLevel }: InvaderMarkerProps) {
   const { setSelectedInvader } = useInvadersContext()
   const { getStatus } = useInvaderStatuses()
 
@@ -26,9 +27,15 @@ export function InvaderMarker({ invader }: InvaderMarkerProps) {
     return [colors.primary, colors.accent]
   }, [getStatus, invader.id])
 
+  // Determine marker style based on zoom level
+  const markerStyle = useMemo(() => {
+    const isZoomedIn = zoomLevel >= 14 // Threshold for zoomed in view
+    return isZoomedIn ? styles.marker : styles.markerSmall
+  }, [zoomLevel])
+
   return (
     <Marker coordinate={invader} onPress={() => setSelectedInvader(invader)}>
-      <LinearGradient colors={gradientColors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.marker} />
+      <LinearGradient colors={gradientColors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={markerStyle} />
     </Marker>
   )
 }
@@ -38,5 +45,10 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
+  },
+  markerSmall: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
 })

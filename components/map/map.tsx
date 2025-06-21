@@ -39,6 +39,9 @@ export function Map() {
     }
   }
 
+  // Calculate zoom level from region delta
+  const zoomLevel = Math.log2(360 / region.longitudeDelta)
+
   return (
     <>
       <MapView
@@ -50,7 +53,7 @@ export function Map() {
         showsMyLocationButton={false}
       >
         {invaders?.map(invader => (
-          <InvaderMarker key={invader.id} invader={invader} />
+          <InvaderMarker key={invader.id} invader={invader} zoomLevel={zoomLevel} />
         ))}
       </MapView>
       <LocationButton onPress={handleLocationPress} />
