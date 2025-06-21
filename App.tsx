@@ -1,13 +1,16 @@
 import { InvadersContextProvider } from './hooks/use-invaders-context'
+import { FiltersProvider } from './hooks/use-filters-context'
 import { Map } from './components/map/map'
 import { StyleSheet, View } from 'react-native'
 
 export default function App() {
   return (
     <InvadersContextProvider>
-      <View style={styles.container}>
-        <Map />
-      </View>
+      <FiltersProvider>
+        <View style={styles.container}>
+          <Map />
+        </View>
+      </FiltersProvider>
     </InvadersContextProvider>
   )
 }

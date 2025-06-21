@@ -6,14 +6,17 @@ import { useLocation } from '../../hooks/use-location'
 import { Drawer } from './drawer'
 import { InvaderMarker } from './invader-marker'
 import { LocationButton } from './location-button'
+import { FilterButton } from './filter-button'
 import { useInvadersContext } from '../../hooks/use-invaders-context'
 import { useInvaderStatuses } from '../../hooks/use-invader-statuses'
+import { useFiltersContext } from '../../hooks/use-filters-context'
 
 export function Map() {
   const { region, setRegion } = useRegion()
   const { location, getUserRegion } = useLocation()
   const { invaders } = useInvadersContext()
-  const { loadStatuses } = useInvaderStatuses()
+  const { loadStatuses, getStatus } = useInvaderStatuses()
+  const { filters } = useFiltersContext()
   const mapRef = useRef<MapView>(null)
   const [hasAutoCentered, setHasAutoCentered] = useState(false)
 
@@ -42,6 +45,18 @@ export function Map() {
   // Calculate zoom level from region delta
   const zoomLevel = Math.log2(360 / region.longitudeDelta)
 
+  // Filter invaders based on status and filter settings
+  const filteredInvaders = invaders?.filter(invader => {
+    const { found, destroyed } = getStatus(invader.id)
+
+    // Show invader if it matches any of the active filters
+    if (found && filters.showFound) return true
+    if (destroyed && filters.showDestroyed) return true
+    if (!found && !destroyed) return true // Always show unfound/undestroyed invaders
+
+    return false
+  })
+
   return (
     <>
       <MapView
@@ -52,11 +67,12 @@ export function Map() {
         showsUserLocation
         showsMyLocationButton={false}
       >
-        {invaders?.map(invader => (
+        {filteredInvaders?.map(invader => (
           <InvaderMarker key={invader.id} invader={invader} zoomLevel={zoomLevel} />
         ))}
       </MapView>
       <LocationButton onPress={handleLocationPress} />
+      <FilterButton />
       <Drawer />
     </>
   )
