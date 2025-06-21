@@ -6,7 +6,7 @@ import { useInvadersContext } from './use-invaders-context'
 const INITIAL_REGION = {
   latitude: 48.86,
   longitude: 2.34,
-  latitudeDelta: 0.2,
+  latitudeDelta: 0.1,
   longitudeDelta: 0.1,
 }
 
